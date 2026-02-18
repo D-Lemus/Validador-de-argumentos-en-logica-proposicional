@@ -96,6 +96,7 @@ def performCalculation(output):
             right = result.pop()
             left = result.pop()
 
+            # unary operator, so we only need the right operand
             if element == '¬':
                 result.append(left)
                 result.append(not right)

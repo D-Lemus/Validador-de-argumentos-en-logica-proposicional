@@ -1,6 +1,4 @@
 
-
-
 presedence = {
     "¬": 5,
     "∧": 4,
@@ -9,54 +7,70 @@ presedence = {
     "↔": 1
 }
 
-def shuntingYard(input : str):
-    '''Shunting Yard or Dijkstras Algorithm'''
-
-    # Limpiamos el input para dejar solo operadores y letras
+def _cleanInput(input:str):
+    '''Function meant for elimminating blank spaces and segmenting each element of the string'''
     clean_input = list(input.strip().replace(" ",""))
 
-    # Asignamos el output y el opstack(operator stack)
+    #Debugging purposes
+    print(f'clean input:{clean_input}')
+    print(80*'=')
+    return clean_input
+
+def shuntingYard(input : str):
+    '''Shunting Yard algorythm that converts an arithmetic notation into a Reverse Polish Notation(RPN)'''
+    clean_input = _cleanInput(input)
+
+    # Asigning the output and stack as empty lists
     output = []
     stack = []
 
     for token in clean_input:
-        if token in presedence:
-
-            # Mientras todavia tengamos elementos dentro del stack...
-            while len(stack) > 0:
-                '''En este while declaramos una variable [op] que se iguala al ultimo elemento
-                del STACK, y luego comparamos su jerarquia con la del token actual. 
-                Si el token actual es de mayor presedencia significa que se puede meter en el 
-                STACK entonces rompemos ciclo, si no es el caso sacamos el operador del STACK 
-                y lo metemos al OUTPUT, y seguimos comparando con el siguiente operador del 
-                STACK'''
-
-                op = stack[-1]
-
-                if presedence[token]> presedence[op]:
-                    break
-                stack.pop()
-                output.append(op)
-
+        
+        #if 'token' is a left parenthesis, we will push it to the stack
+        if token == '(':
             stack.append(token)
 
+        #if 'token' is a right parenthesis, we will pop the operators from the stack to the output until we find a left parenthesis. We will discard the left parenthesis
+        elif token == ')':
+            while len(stack)>0:
+                op = stack.pop()
+                if op == '(':
+                    break
+                output.append(op)
+
+        #If 'token' is an operator, we will check the presedence and associativity of the operators in the stack and move them to the output if necessary
         else:
-            output.append(token)
+            if token in presedence:
+                # While there is an operator at the top of the stack with greater precedence, we will pop it to the output
+                while len(stack) > 0:
+                    op = stack[-1]
+                    if op == '(':
+                        break
+                    if presedence[token]> presedence[op]:
+                        break
+                    stack.pop()
+                    output.append(op)
+                stack.append(token)
+            else:
+                output.append(token)
 
     #Sacar los operadores restantes del STACK al OUTPUT
     while len(stack) > 0:
         output.append(stack.pop())
 
-    print(f"Reverse Polis Notation RPE: {output}")
-    print(10*'=')
+    # Debugging purposes
+    print(f"Reverse Polish Notation (RPE): {output}")
+    print(80*'=')
     return output
     
 def applyBooleanValues(postfix):
+    '''Asigning a boolean value to each proposition in the RPN'''
 
     propositions = {
        'p': True,
        'q': False,
        'r': True,
+       't' : False,
     }
     
     #boolean reverse polish notation
@@ -67,11 +81,13 @@ def applyBooleanValues(postfix):
         else:
             boolean_rpe.append(element)
 
-    print(f"Boolean Values Replaced: {boolean_rpe}\n")
-    print(10*'=')
+    # Debugging purposes
+    print(f"Boolean Values Replaced: {boolean_rpe}")
+    print(80*'=')
     return boolean_rpe
 
 def performCalculation(output):
+    '''Performing calculations for unary and binary operators in the RPN'''
     result = []
     for element in output:
         if element not in presedence:
@@ -93,16 +109,17 @@ def performCalculation(output):
             elif element == '↔':
                 '''Equivalencia logica de p↔q es (¬p∨q)∧(¬q∨p)'''
                 result.append((not left or right)and(not right or left))
-    print(f'YO WE DID IT AT FIRST TRY BABY\n')
+
+    #Debugging purposes
     print(f'result: {result}')
+    
     return result
 
 
-input = "p ↔ ¬q ∧ r"
+input = "(p∨q)∧(¬r→s)"
+print(f"Input: {input}")
 shunt = shuntingYard(input)
-
 boolShunt = applyBooleanValues(shunt)
-
 result = performCalculation(boolShunt)
 
 

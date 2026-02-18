@@ -47,6 +47,8 @@ def shuntingYard(input : str):
     while len(stack) > 0:
         output.append(stack.pop())
 
+    print(f"Reverse Polis Notation RPE: {output}")
+    print(10*'=')
     return output
     
 def applyBooleanValues(postfix):
@@ -65,10 +67,9 @@ def applyBooleanValues(postfix):
         else:
             boolean_rpe.append(element)
 
+    print(f"Boolean Values Replaced: {boolean_rpe}\n")
+    print(10*'=')
     return boolean_rpe
-
-
-    pass
 
 def performCalculation(output):
     result = []
@@ -92,13 +93,17 @@ def performCalculation(output):
             elif element == '↔':
                 '''Equivalencia logica de p↔q es (¬p∨q)∧(¬q∨p)'''
                 result.append((not left or right)and(not right or left))
-                
+    print(f'YO WE DID IT AT FIRST TRY BABY\n')
+    print(f'result: {result}')
+    return result
 
 
 input = "p ↔ ¬q ∧ r"
 shunt = shuntingYard(input)
-print(shunt)
+
 boolShunt = applyBooleanValues(shunt)
-print(boolShunt)
+
+result = performCalculation(boolShunt)
+
 
 

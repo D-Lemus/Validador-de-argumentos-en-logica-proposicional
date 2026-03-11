@@ -8,13 +8,15 @@ presedence = {
 }
 
 def _cleanInput(input:str):
-    '''Function meant for elimminating blank spaces and segmenting each element of the string'''
+    '''Function meant for elimminating blank spaces and segmenting 
+    each element of the string'''
     clean_input = list(input.strip().replace(" ",""))
 
     #Debugging purposes
     print(f'clean input:{clean_input}')
     print(80*'=')
     return clean_input
+
 
 def shuntingYard(input : str):
     '''Shunting Yard algorythm that converts an arithmetic notation into a Reverse Polish Notation(RPN)'''
@@ -64,7 +66,8 @@ def shuntingYard(input : str):
     return output
     
 def applyBooleanValues(postfix):
-    '''Asigning a boolean value to each proposition in the RPN'''
+    '''Asigning a boolean value to 
+    each proposition in the RPN'''
 
     propositions = {
        'p': True,
@@ -116,9 +119,13 @@ def performCalculation(output):
     
     return result
 
+def truthTable(variables, formula):
+    '''Function that generates a truth table for a given input'''
+    pass
 
-input = "(p∨q)∧(¬r→s)"
-print(f"Input: {input}")
+
+input = "(p∨q )∧(¬r→s) "
+print(f"Input: {input}\n")
 shunt = shuntingYard(input)
 boolShunt = applyBooleanValues(shunt)
 result = performCalculation(boolShunt)

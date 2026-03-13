@@ -1,6 +1,8 @@
 import flet as ft
+import truth_tables as tb
 
 def main(page: ft.Page):
+    "AB"
     page.title = "Validador de Argumentos"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
@@ -67,12 +69,34 @@ def main(page: ft.Page):
         page.add(b_volver)
 
     def pag_calculadora():
+        
         page.clean()
 
         proposicion = ft.TextField(label="proposicion")
         b_volver = ft.ElevatedButton("Volver", on_click = lambda e: pag_inicio())
 
         page.add(proposicion, b_volver)
+
+    """def calcular():
+            input = proposicion.value
+            paso1 = ft.Text(f"Input: {input}\n",
+                            size = 15,
+                            text_align = ft.TextAlign.CENTER
+                            )
+            #print(f"Input: {input}\n")
+            shunt = log.shuntingYard(input)
+            boolShunt = log.applyBooleanValues(shunt)
+            result = log.performCalculation(boolShunt)
+            paso2 = ft.Text(f"Resultado: {result}\n",
+                            size = 15,
+                            text_align = ft.TextAlign.CENTER
+                            )
+            page.add(paso1, paso2)
+            #print(f"Resultado: {result}\n")
+
+        b_prueba = ft.ElevatedButton("calcular", on_click = lambda e: calcular())
+        
+        page.add(b_prueba)"""
 
     pag_inicio()
 

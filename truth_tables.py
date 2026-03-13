@@ -9,6 +9,7 @@ conclusion = "r"
 
 
 def translateFormula(formula: str) -> str:
+    
     f = formula.replace(" ", "")
     f = f.replace("¬", "not ")
     f = f.replace("∧", " and ")
@@ -27,13 +28,14 @@ def extractVariables(formulas: list) -> list:
             if token not in SYMBOLS:
                 variables.add(token)
     return sorted(variables)
-
+            
 
 def generateTruthTable(premises: list, conclusion: str):
     all_formulas    = premises + [conclusion]
     variables       = extractVariables(all_formulas)
     translated      = [translateFormula(f) for f in all_formulas]
     prem_translated = translated[:-1]
+    # [1,2,3,4,5,6]
 
     print(f"\n\t\tTABLA DE VERDAD")
     tabla = ttg.Truths(variables, translated, ints=False)
@@ -55,10 +57,10 @@ def generateTruthTable(premises: list, conclusion: str):
         if all_prems_true:
             if conc_true:
                 critical_rows.append(row_vals)
-                #print(f"Filas criticas: {critical_rows}")
+                print(f"Filas criticas: {critical_rows}")
             else:
                 invalid_rows.append(row_vals)
-                #print(f"Filas invalidas: {invalid_rows}")
+                print(f"Filas invalidas: {invalid_rows}")
 
     print()
     if invalid_rows:

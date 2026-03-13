@@ -1,0 +1,11 @@
+id,name,age,city,salary,department
+1,Alice Johnson,28,New York,72000,Engineering
+2,Bob Smith,34,Los Angeles,58000,Marketing
+3,Charlie Brown,45,Chicago,95000,Engineering
+4,Diana Prince,29,New York,61000,HR
+5,Eve Davis,38,Houston,83000,Finance
+6,Frank Miller,52,Chicago,110000,Engineering
+7,Grace Lee,31,Los Angeles,67000,Marketing
+8,Henry Wilson,27,Houston,54000,HR
+9,Iris Taylor,41,New York,88000,Finance
+10,Jack Anderson,36,Chicago,76000,Engineering

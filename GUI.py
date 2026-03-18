@@ -16,7 +16,7 @@ def main(page: ft.Page):
     #page.theme_mode = ft.ThemeMode.DARK
 
 
-    def pag_inicio():
+    def pag_inicio(e=None):
         'acomodo de pag inicio'
         page.clean() #limpia todo lo que haya antes en la pag
 
@@ -40,7 +40,7 @@ def main(page: ft.Page):
         page.add(bienvenida, subsaludo, b_empezar, b_tablas, b_calculadora)
             
 
-    def pag_argumentos():
+    def pag_argumentos(e=None):
         'acomodo pag de argumentos'
         # p→q,p∧r,¬q∨r
         # r
@@ -58,16 +58,16 @@ def main(page: ft.Page):
 
         b_simbolos = ft.Row(
             controls=[
-                ft.OutlinedButton("¬", on_click=agregar_simbolo),
-                ft.OutlinedButton("∧", on_click=agregar_simbolo),
-                ft.OutlinedButton("∨", on_click=agregar_simbolo),
-                ft.OutlinedButton("→", on_click=agregar_simbolo),
-                ft.OutlinedButton("↔", on_click=agregar_simbolo)
+                ft.ElevatedButton("¬", on_click=agregar_simbolo),
+                ft.ElevatedButton("∧", on_click=agregar_simbolo),
+                ft.ElevatedButton("∨", on_click=agregar_simbolo),
+                ft.ElevatedButton("→", on_click=agregar_simbolo),
+                ft.ElevatedButton("↔", on_click=agregar_simbolo)
                 ]
                 )"""
-                      
+        
 
-        def validar_argumento():
+        def validar_argumento(e):
             'conecta archivo truth_tables.py a GUI'
 
             #capta lo de los input (+ hace una lista separada por las comas del input)
@@ -75,17 +75,17 @@ def main(page: ft.Page):
             conclusion = conclu.value.strip()
 
             #usa función de truth_tables.py. Todavía no funciona 
-            tabla = TV.generateTruthTable(premises, conclusion)
+            df = TV.generateTruthTable(premises, conclusion)
             tabla_GUI = ft.DataTable( 
                 columns=[
                     ft.DataColumn(ft.Text(columna))
-                    for columna in tabla.columns
+                    for columna in df.columns
                 ],
                 rows=[
                     ft.DataRow(cells=[
                         ft.DataCell(ft.Text(str(valor)))
                         for valor in fila])
-                        for _, fila in tabla.iterrows()]
+                        for _, fila in df.iterrows()]
             )
         
             page.add(ft.Column(controls=[tabla_GUI],
@@ -97,11 +97,11 @@ def main(page: ft.Page):
         b_validar = ft.ElevatedButton("validar", on_click = validar_argumento)
 
         #agregar todas las variables (botones) a la pag. Todavía no están los inputs
-        page.add(argumentos, conclu, b_volver, b_validar)
+        page.add(argumentos, conclu, b_validar, b_volver)
 
 
     # Acomodar página tablas
-    def pag_tablas():
+    def pag_tablas(e=None):
         page.clean()
 
         #agrega tabla de prueba
@@ -126,7 +126,7 @@ def main(page: ft.Page):
         page.add(b_volver)
 
     #Pagina de calculadora. Prueba para conectar lógica con GUI usando flet
-    def pag_calculadora():
+    def pag_calculadora(e=None):
         page.clean()
 
         proposicion = ft.TextField(label="proposicion")

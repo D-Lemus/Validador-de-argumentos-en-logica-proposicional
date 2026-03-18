@@ -1,17 +1,26 @@
 import flet as ft
-import truth_tables as tb
+import shunting_yard as log
+import truth_tables as TV
 
+
+# Iniciar Ventana
 def main(page: ft.Page):
-    "AB"
-    page.title = "Validador de Argumentos"
-    page.vertical_alignment = ft.MainAxisAlignment.CENTER
+    'abre ventana'
+    page.title = "Validador de Argumentos" #título de la pag
+
+    #alinear y dar tamaño a la pag en el monitor
+    page.vertical_alignment = ft.MainAxisAlignment.START
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
-    page.window.height = 500
-    page.window.width = 700
-    page.theme_mode = ft.ThemeMode.DARK
+    page.window.height = 700
+    page.window.width = 600
+    #page.theme_mode = ft.ThemeMode.DARK
+
 
     def pag_inicio():
-        page.clean()
+        'acomodo de pag inicio'
+        page.clean() #limpia todo lo que haya antes en la pag
+
+        #variables para textos simples (con tamaño, negritas y alineación)
         bienvenida = ft.Text("BIENVENIDX!",
                              size = 30,
                              weight = ft.FontWeight.BOLD,
@@ -21,42 +30,89 @@ def main(page: ft.Page):
                             size = 15,
                             text_align = ft.TextAlign.CENTER
                             )
-        b_empezar = ft.ElevatedButton("empezar", on_click = lambda e: pag_argumentos())
-        b_tablas = ft.ElevatedButton("tablas", on_click = lambda e: pag_tablas())
-        b_calculadora = ft.ElevatedButton("calculadora", on_click = lambda e: pag_calculadora())
+        
+        #variables para botones con sombra ("texto dentro del botón", evento = función)
+        b_empezar = ft.ElevatedButton("empezar", on_click = pag_argumentos)
+        b_tablas = ft.ElevatedButton("tablas", on_click = pag_tablas)
+        b_calculadora = ft.ElevatedButton("calculadora", on_click = pag_calculadora)
 
-        page.add(
-            ft.Column(
-                [bienvenida, subsaludo, b_empezar, 
-                 ft.Row(
-                     [b_tablas, b_calculadora],
-                     alignment = ft.MainAxisAlignment.CENTER)
-                ],
-                alignment = ft.MainAxisAlignment.CENTER,
-                horizontal_alignment = ft.CrossAxisAlignment.CENTER
-            )
-        )
+        #agregar todas las variables (texto y botones) a la pag
+        page.add(bienvenida, subsaludo, b_empezar, b_tablas, b_calculadora)
+            
 
     def pag_argumentos():
-        page.clean()
+        'acomodo pag de argumentos'
+        # p→q,p∧r,¬q∨r
+        # r
+        page.clean() #limpia pag
 
-        argumento = ft.TextField(label="argumento")
-        b_volver = ft.ElevatedButton("Volver", on_click = lambda e: pag_inicio())
+        #inputs
+        argumentos = ft.TextField(label="argumentos")
+        conclu = ft.TextField(label="conclusion")
 
-        page.add(argumento, b_volver)
+        #botones para simbolos
+        """def agregar_simbolo(e):
+            'agrega el texto del botón a input de argumentos'
+            argumentos.value += e.control.text
+            page.update()
+
+        b_simbolos = ft.Row(
+            controls=[
+                ft.OutlinedButton("¬", on_click=agregar_simbolo),
+                ft.OutlinedButton("∧", on_click=agregar_simbolo),
+                ft.OutlinedButton("∨", on_click=agregar_simbolo),
+                ft.OutlinedButton("→", on_click=agregar_simbolo),
+                ft.OutlinedButton("↔", on_click=agregar_simbolo)
+                ]
+                )"""
+                      
+
+        def validar_argumento():
+            'conecta archivo truth_tables.py a GUI'
+
+            #capta lo de los input (+ hace una lista separada por las comas del input)
+            premises = argumentos.value.split(",")
+            conclusion = conclu.value.strip()
+
+            #usa función de truth_tables.py. Todavía no funciona 
+            tabla = TV.generateTruthTable(premises, conclusion)
+            tabla_GUI = ft.DataTable( 
+                columns=[
+                    ft.DataColumn(ft.Text(columna))
+                    for columna in tabla.columns
+                ],
+                rows=[
+                    ft.DataRow(cells=[
+                        ft.DataCell(ft.Text(str(valor)))
+                        for valor in fila])
+                        for _, fila in tabla.iterrows()]
+            )
+        
+            page.add(ft.Column(controls=[tabla_GUI],
+                               scroll=ft.ScrollMode.AUTO))
+            page.update()
+
+        # botones para usar funciones
+        b_volver = ft.ElevatedButton("Volver", on_click = pag_inicio)
+        b_validar = ft.ElevatedButton("validar", on_click = validar_argumento)
+
+        #agregar todas las variables (botones) a la pag. Todavía no están los inputs
+        page.add(argumentos, conclu, b_volver, b_validar)
 
 
+    # Acomodar página tablas
     def pag_tablas():
         page.clean()
 
+        #agrega tabla de prueba
         page.add(
-        ft.DataTable(
-            columns=[
+        ft.DataTable( 
+            columns=[ #títulos de columnas
                 ft.DataColumn(ft.Text("P")),
                 ft.DataColumn(ft.Text("Q")),
                 ft.DataColumn(ft.Text("P ∧ Q")),
             ],
-            rows=[
+            rows=[ #lineas creadas celda por celda
                 ft.DataRow(cells=[ft.DataCell(ft.Text("T")), ft.DataCell(ft.Text("T")), ft.DataCell(ft.Text("T"))]),
                 ft.DataRow(cells=[ft.DataCell(ft.Text("T")), ft.DataCell(ft.Text("F")), ft.DataCell(ft.Text("F"))]),
                 ft.DataRow(cells=[ft.DataCell(ft.Text("F")), ft.DataCell(ft.Text("T")), ft.DataCell(ft.Text("F"))]),
@@ -64,20 +120,21 @@ def main(page: ft.Page):
             ],
         )
     )
-        b_volver = ft.ElevatedButton("Volver", on_click = lambda e: pag_inicio())
+        # boton para volver a pag inicial
+        b_volver = ft.ElevatedButton("Volver", on_click = pag_inicio)
 
         page.add(b_volver)
 
+    #Pagina de calculadora. Prueba para conectar lógica con GUI usando flet
     def pag_calculadora():
-        
         page.clean()
 
         proposicion = ft.TextField(label="proposicion")
-        b_volver = ft.ElevatedButton("Volver", on_click = lambda e: pag_inicio())
+        b_volver = ft.ElevatedButton("Volver", on_click = pag_inicio)
 
         page.add(proposicion, b_volver)
 
-    """def calcular():
+        def calcular():
             input = proposicion.value
             paso1 = ft.Text(f"Input: {input}\n",
                             size = 15,
@@ -94,12 +151,10 @@ def main(page: ft.Page):
             page.add(paso1, paso2)
             #print(f"Resultado: {result}\n")
 
-        b_prueba = ft.ElevatedButton("calcular", on_click = lambda e: calcular())
-        
-        page.add(b_prueba)"""
+        b_prueba = ft.ElevatedButton("calcular", on_click = calcular)
+        page.add(b_prueba)
 
     pag_inicio()
-
-    #page.update()
+    #page.update() <- esto era para eventos
 
 ft.app(target=main)

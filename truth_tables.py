@@ -65,10 +65,19 @@ def generateTruthTable(premises: list, conclusion: str):
     print()
     if invalid_rows:
         print("ARGUMENTO INVALIDO")
+        valor = "INVALIDO"
     elif critical_rows:
         print("ARGUMENTO VALIDO")
+        valor = "VALIDO"
     else:
         print("las premisas nunca son todas T al mismo tiempo")
+        valor = "NO HAY RENGLONES CRÍTICOS"
+    
+    #debug
+    #print(type(df))
+    #print(valor)
+
+    return valor, df
 
 
 if __name__ == "__main__":

@@ -75,7 +75,10 @@ def main(page: ft.Page):
             conclusion = conclu.value.strip()
 
             #usa función de truth_tables.py. Todavía no funciona 
-            df = TV.generateTruthTable(premises, conclusion)
+            valor, df = TV.generateTruthTable(premises, conclusion)
+
+            #debug: print(valor, df)
+
             tabla_GUI = ft.DataTable( 
                 columns=[
                     ft.DataColumn(ft.Text(columna))
@@ -87,8 +90,12 @@ def main(page: ft.Page):
                         for valor in fila])
                         for _, fila in df.iterrows()]
             )
+            validez = ft.Text(f"El argumento es: {valor}",
+                            size = 15,
+                            text_align = ft.TextAlign.CENTER
+                            )
         
-            page.add(ft.Column(controls=[tabla_GUI],
+            page.add(validez, ft.Column(controls=[tabla_GUI],
                                scroll=ft.ScrollMode.AUTO))
             page.update()
 

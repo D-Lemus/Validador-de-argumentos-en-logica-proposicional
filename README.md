@@ -10,11 +10,6 @@
 
 ## Requirements
 
-## Installation
-
-```bash
-
-```
 
 ## Usage
 

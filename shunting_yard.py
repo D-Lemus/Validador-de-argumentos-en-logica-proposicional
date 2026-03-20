@@ -121,15 +121,15 @@ def performCalculation(output):
     for element in output:
         if element not in presedence:
             result.append(element)
+            
         elif element == '¬':
             right = result.pop()
-            result.append(not right)
+            result.append(not right) # unary operator, so we only need the right operand
             
         else:
             right = result.pop()
             left = result.pop()
 
-            # unary operator, so we only need the right operand
             if element == '∧':
                 result.append(left and right)
             elif element == '∨':

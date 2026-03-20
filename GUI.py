@@ -46,25 +46,28 @@ def main(page: ft.Page):
         # r
         page.clean() #limpia pag
 
+
         #inputs
-        argumentos = ft.TextField(label="argumentos")
+        argumentos = ft.TextField(label="argumentos", autofocus=True,)
         conclu = ft.TextField(label="conclusion")
 
         #botones para simbolos
-        """def agregar_simbolo(e):
+        def agregar_simbolo(e):
             'agrega el texto del botón a input de argumentos'
-            argumentos.value += e.control.text
+            argumentos.value += e.control.data #agrega el contenido 'data' de cada botón al textfield de 'argumentos'
             page.update()
 
         b_simbolos = ft.Row(
             controls=[
-                ft.ElevatedButton("¬", on_click=agregar_simbolo),
-                ft.ElevatedButton("∧", on_click=agregar_simbolo),
-                ft.ElevatedButton("∨", on_click=agregar_simbolo),
-                ft.ElevatedButton("→", on_click=agregar_simbolo),
-                ft.ElevatedButton("↔", on_click=agregar_simbolo)
-                ]
-                )"""
+                ft.ElevatedButton("¬", data="¬", on_click=agregar_simbolo),
+                ft.ElevatedButton("∧", data="∧", on_click=agregar_simbolo),
+                ft.ElevatedButton("∨", data="∨",on_click=agregar_simbolo),
+                ft.ElevatedButton("→", data="→", on_click=agregar_simbolo),
+                ft.ElevatedButton("↔", data="↔", on_click=agregar_simbolo)
+                ],
+                alignment = ft.MainAxisAlignment.CENTER,
+                #spacing = 10
+                )
         
 
         def validar_argumento(e):
@@ -73,11 +76,11 @@ def main(page: ft.Page):
             #capta lo de los input (+ hace una lista separada por las comas del input)
             premises = argumentos.value.split(",")
             conclusion = conclu.value.strip()
-
+            
             #usa función de truth_tables.py. Todavía no funciona 
             valor, df = TV.generateTruthTable(premises, conclusion)
 
-            #debug: print(valor, df)
+            # debug -> print(valor, df)
 
             tabla_GUI = ft.DataTable( 
                 columns=[
@@ -100,11 +103,11 @@ def main(page: ft.Page):
             page.update()
 
         # botones para usar funciones
-        b_volver = ft.ElevatedButton("Volver", on_click = pag_inicio)
+        b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
         b_validar = ft.ElevatedButton("validar", on_click = validar_argumento)
 
         #agregar todas las variables (botones) a la pag. Todavía no están los inputs
-        page.add(argumentos, conclu, b_validar, b_volver)
+        page.add(argumentos, b_simbolos, conclu, b_validar, b_volver)
 
 
     # Acomodar página tablas
@@ -128,7 +131,7 @@ def main(page: ft.Page):
         )
     )
         # boton para volver a pag inicial
-        b_volver = ft.ElevatedButton("Volver", on_click = pag_inicio)
+        b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
 
         page.add(b_volver)
 
@@ -137,7 +140,7 @@ def main(page: ft.Page):
         page.clean()
 
         proposicion = ft.TextField(label="proposicion")
-        b_volver = ft.ElevatedButton("Volver", on_click = pag_inicio)
+        b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
 
         page.add(proposicion, b_volver)
 

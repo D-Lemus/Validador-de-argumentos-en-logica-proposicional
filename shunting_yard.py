@@ -64,17 +64,43 @@ def shuntingYard(input : str):
     print(f"Reverse Polish Notation (RPE): {output}")
     print(80*'=')
     return output
-    
-def applyBooleanValues(postfix):
+
+
+def proposition_dict(shunt, values):
+    '''Finding variables and creating dictionary with values given'''
+    dictionary_values = {
+        'True': True,
+        'TRUE': True,
+        'true': True,
+        '1': True,
+        '0': False,
+        'False': False,
+        'FALSE': False,
+        'false': False,
+        }
+    values_bool = []
+    for value in values:
+        if value in dictionary_values:
+            values_bool.append(dictionary_values[value])
+
+    variables = []
+    for elemento in shunt:
+        if elemento not in presedence:
+            variables.append(elemento)
+    propositions = dict(zip(variables, values_bool))
+
+    # Debugging purposes
+    print(f"Variables: {variables}")
+    print(f"Valores: {values_bool}")
+    print(f"Propositions dictionary: {propositions}")
+    print(80*'=')
+
+    return propositions
+
+
+def applyBooleanValues(postfix, propositions):
     '''Asigning a boolean value to 
     each proposition in the RPN'''
-
-    propositions = {
-       'p': True,
-       'q': False,
-       'r': True,
-       't' : False,
-    }
     
     #boolean reverse polish notation
     boolean_rpe = []
@@ -124,11 +150,15 @@ def truthTable(variables, formula):
     pass
 
 
+
 input = "(p∨q )∧(¬r→s) "
 print(f"Input: {input}\n")
 shunt = shuntingYard(input)
-boolShunt = applyBooleanValues(shunt)
-result = performCalculation(boolShunt)
 
+values = [True, False, True, False]
+var_values = proposition_dict(shunt, values)
+
+boolShunt = applyBooleanValues(shunt, var_values)
+result = performCalculation(boolShunt)
 
 

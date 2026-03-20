@@ -198,7 +198,7 @@ def main(page: ft.Page):
     def pag_calculadora(e=None):
         page.clean()
 
-        def calcular():
+        def calcular(e):
             input = proposicion.value
             values = valores.value.split(",")
             propo = ft.Text(f"Proposicion: {input}",

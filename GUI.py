@@ -8,36 +8,96 @@ def main(page: ft.Page):
     'abre ventana'
     page.title = "Validador de Argumentos" #título de la pag
 
-    #alinear y dar tamaño a la pag en el monitor
-    page.vertical_alignment = ft.MainAxisAlignment.START
+    #alinear y dar tamaño a la pag
+    page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.window.height = 700
     page.window.width = 600
-    #page.theme_mode = ft.ThemeMode.DARK
+    page.theme_mode = ft.ThemeMode.DARK
+    page.theme = ft.Theme(
+        color_scheme=ft.ColorScheme(
+        ))
 
 
     def pag_inicio(e=None):
         'acomodo de pag inicio'
         page.clean() #limpia todo lo que haya antes en la pag
+        
+        #fondo interactivo
+        def tes_a_efes(e):
+            e.control.content.value = "F" if e.data == True else "T"
+            e.control.content.color = ft.Colors.RED if e.data == True else ft.Colors.GREEN_700
+            e.control.update()
+
+        grid = ft.GridView(
+            max_extent=50,
+            child_aspect_ratio=1,
+            )
+
+        for _ in range(200):
+            grid.controls.append(
+                ft.Container(
+                    content=ft.Text("T", size=15, weight="bold", color=ft.Colors.BLUE_GREY,),
+                    on_hover=tes_a_efes,
+                    alignment=ft.Alignment.CENTER,
+                ))
+        
+        ##franja = ft.Container(content=grid, height=180)
+
+        overlay = ft.Container(
+            width=500,
+            height=4000,
+            bgcolor="#010101FF",
+            alignment=ft.Alignment.CENTER,
+            ignore_interactions=True
+            )
 
         #variables para textos simples (con tamaño, negritas y alineación)
-        bienvenida = ft.Text("BIENVENIDX!",
-                             size = 30,
+        bienvenida = ft.Text("BIENVENIDX",
+                             size = 60,
                              weight = ft.FontWeight.BOLD,
-                             text_align = ft.TextAlign.CENTER
+                             text_align = ft.TextAlign.CENTER,
                              )
-        subsaludo = ft.Text("a tu validador de argumentos",
-                            size = 15,
-                            text_align = ft.TextAlign.CENTER
+        subsaludo = ft.Text("validador de argumentos",
+                            size = 25,
+                            text_align = ft.TextAlign.CENTER,
                             )
         
         #variables para botones con sombra ("texto dentro del botón", evento = función)
-        b_empezar = ft.ElevatedButton("empezar", on_click = pag_argumentos)
-        b_tablas = ft.ElevatedButton("tablas", on_click = pag_tablas)
-        b_calculadora = ft.ElevatedButton("calculadora", on_click = pag_calculadora)
-
+        b_empezar = ft.ElevatedButton("empezar!",
+                                      on_click = pag_argumentos,
+                                      width=200, height=90,
+                                      style=ft.ButtonStyle(text_style=ft.TextStyle(
+                                             size=28,
+                                             weight=ft.FontWeight.BOLD,
+                                             ))
+                                             )
+        b_tablas = ft.IconButton(icon=ft.Icons.TABLE_CHART,
+                                 icon_color=ft.Colors.BLACK,
+                                 icon_size=80,
+                                 bgcolor=ft.Colors.SECONDARY,
+                                 on_click = pag_tablas,
+                                 width=100, height=100,
+                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),),
+                                 )
+        b_calculadora = ft.IconButton(icon=ft.Icons.CALCULATE,
+                                      icon_color=ft.Colors.BLACK,
+                                      icon_size=80,
+                                      bgcolor=ft.Colors.SECONDARY,
+                                      on_click = pag_calculadora,
+                                      width=100, height=100,
+                                      style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),),
+                                      )
+        b_extras = ft.Row(controls=[b_tablas, b_calculadora],
+                          alignment=ft.MainAxisAlignment.CENTER, spacing=30,
+                          )
         #agregar todas las variables (texto y botones) a la pag
-        page.add(bienvenida, subsaludo, b_empezar, b_tablas, b_calculadora)
+        contenido = (ft.Column(
+            controls=[bienvenida, b_empezar, subsaludo, ft.Container(height=40), b_extras],
+            alignment = ft.MainAxisAlignment.CENTER,
+            horizontal_alignment = ft.CrossAxisAlignment.CENTER,
+            ))
+        page.add(ft.Stack([grid, overlay, contenido],expand=True))
             
 
     def pag_argumentos(e=None):
@@ -48,7 +108,7 @@ def main(page: ft.Page):
 
 
         #inputs
-        argumentos = ft.TextField(label="argumentos", autofocus=True,)
+        argumentos = ft.TextField(label="argumentos", autofocus=True)
         conclu = ft.TextField(label="conclusion")
 
         #botones para simbolos
@@ -139,30 +199,31 @@ def main(page: ft.Page):
     def pag_calculadora(e=None):
         page.clean()
 
-        proposicion = ft.TextField(label="proposicion")
-        b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
-
-        page.add(proposicion, b_volver)
-
-        def calcular():
+        def calcular(e):
             input = proposicion.value
-            paso1 = ft.Text(f"Input: {input}\n",
+            values = valores.value.split(",")
+            propo = ft.Text(f"Proposicion: {input}",
                             size = 15,
                             text_align = ft.TextAlign.CENTER
                             )
-            #print(f"Input: {input}\n")
             shunt = log.shuntingYard(input)
-            boolShunt = log.applyBooleanValues(shunt)
+            var_values = log.proposition_dict(shunt, values)
+            boolShunt = log.applyBooleanValues(shunt, var_values)
             result = log.performCalculation(boolShunt)
-            paso2 = ft.Text(f"Resultado: {result}\n",
+
+            resultado = ft.Text(f"Resultado: {result}\n",
                             size = 15,
                             text_align = ft.TextAlign.CENTER
                             )
-            page.add(paso1, paso2)
+            page.add(propo, resultado)
             #print(f"Resultado: {result}\n")
+        
+        proposicion = ft.TextField(label="Proposicion")
+        valores = ft.TextField(label="Valores de las Variables")
+        b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
+        b_calcular = ft.ElevatedButton("calcular", on_click = calcular)
 
-        b_prueba = ft.ElevatedButton("calcular", on_click = calcular)
-        page.add(b_prueba)
+        page.add(proposicion, valores, b_calcular, b_volver)
 
     pag_inicio()
     #page.update() <- esto era para eventos

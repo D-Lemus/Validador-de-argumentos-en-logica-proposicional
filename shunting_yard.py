@@ -64,17 +64,37 @@ def shuntingYard(input : str):
     print(f"Reverse Polish Notation (RPE): {output}")
     print(80*'=')
     return output
-    
-def applyBooleanValues(postfix):
+
+
+def proposition_dict(shunt, values):
+    '''Finding variables and creating dictionary with values given'''
+    dictionary_values = {
+        'true': True,
+        'false': False,
+        }
+    values_bool = []
+    for value in values:
+        if value.lower() in dictionary_values:
+            values_bool.append(dictionary_values[value])
+
+    variables = []
+    for elemento in shunt:
+        if elemento not in presedence:
+            variables.append(elemento)
+    propositions = dict(zip(variables, values_bool))
+
+    # Debugging purposes
+    print(f"Variables: {variables}")
+    print(f"Valores: {values_bool}")
+    print(f"Propositions dictionary: {propositions}")
+    print(80*'=')
+
+    return propositions
+
+
+def applyBooleanValues(postfix, propositions):
     '''Asigning a boolean value to 
     each proposition in the RPN'''
-
-    propositions = {
-       'p': True,
-       'q': False,
-       'r': True,
-       't' : False,
-    }
     
     #boolean reverse polish notation
     boolean_rpe = []
@@ -95,15 +115,16 @@ def performCalculation(output):
     for element in output:
         if element not in presedence:
             result.append(element)
+            
+        elif element == '¬':
+            right = result.pop()
+            result.append(not right) # unary operator, so we only need the right operand
+            
         else:
             right = result.pop()
             left = result.pop()
 
-            # unary operator, so we only need the right operand
-            if element == '¬':
-                result.append(left)
-                result.append(not right)
-            elif element == '∧':
+            if element == '∧':
                 result.append(left and right)
             elif element == '∨':
                 result.append(left or right)
@@ -118,17 +139,5 @@ def performCalculation(output):
     print(f'result: {result}')
     
     return result
-
-def truthTable(variables, formula):
-    '''Function that generates a truth table for a given input'''
-    pass
-
-
-input = "(p∨q )∧(¬r→s) "
-print(f"Input: {input}\n")
-shunt = shuntingYard(input)
-boolShunt = applyBooleanValues(shunt)
-result = performCalculation(boolShunt)
-
 
 

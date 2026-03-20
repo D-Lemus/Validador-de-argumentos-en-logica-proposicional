@@ -127,7 +127,6 @@ def performCalculation(output):
 
             # unary operator, so we only need the right operand
             if element == '¬':
-                result.append(left)
                 result.append(not right)
             elif element == '∧':
                 result.append(left and right)
@@ -144,11 +143,6 @@ def performCalculation(output):
     print(f'result: {result}')
     
     return result
-
-def truthTable(variables, formula):
-    '''Function that generates a truth table for a given input'''
-    pass
-
 
 
 input = "(p∨q )∧(¬r→s) "

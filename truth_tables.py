@@ -16,7 +16,7 @@ def translateFormula(formula: str) -> str:
     f = f.replace("∧", " and ")
     f = f.replace("∨", " or ")
     f = f.replace("→", " => ")
-    f = f.replace("↔", " = ")
+    f = f.replace("↔", " (not p or q) and (not q or p) ")
     return f
 
 

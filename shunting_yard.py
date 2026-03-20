@@ -121,14 +121,16 @@ def performCalculation(output):
     for element in output:
         if element not in presedence:
             result.append(element)
+        elif element == '¬':
+            right = result.pop()
+            result.append(not right)
+            
         else:
             right = result.pop()
             left = result.pop()
 
             # unary operator, so we only need the right operand
-            if element == '¬':
-                result.append(not right)
-            elif element == '∧':
+            if element == '∧':
                 result.append(left and right)
             elif element == '∨':
                 result.append(left or right)
@@ -143,16 +145,5 @@ def performCalculation(output):
     print(f'result: {result}')
     
     return result
-
-
-input = "(p∨q )∧(¬r→s) "
-print(f"Input: {input}\n")
-shunt = shuntingYard(input)
-
-values = [True, False, True, False]
-var_values = proposition_dict(shunt, values)
-
-boolShunt = applyBooleanValues(shunt, var_values)
-result = performCalculation(boolShunt)
 
 

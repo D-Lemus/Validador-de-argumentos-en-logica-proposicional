@@ -14,21 +14,30 @@ Este es un proyecto relacionado a la materia de Lógica y Estructuras Discretas.
 
 - Interfaz Gráfica (GUI):
 
-## Requirements
+## Requerimientos
 
 Para le ejecución de este proyecto es necesario:
-Python 3.
-Flet
-ttg
+- Python version: 3.x
+- Librerias:
+  - Flet - Framework para crear aplicaciones con interfaz gráfica
+  - ttg -  Librería para generar tablas de verdad
+  - pandas -  Librería estándar para análisis y manipulación de datos en Python
 
-## Usage
+## Uso
 
-El proyecto se divide en tres partes principales. truth_tables, generador de tablas de verdad. shunting_yard, lógica que evalua valor de perdad de una proposicion, la GUI, archivo que lanza la aplicación 
+El proyecto se divide en tres partes principales. truth_tables, generador de tablas de verdad. shunting_yard, lógica que evalua valor de verdad de una proposicion, la GUI, archivo que lanza la aplicación 
 
 Al ejecutar la apicacion haz click en 
 
-## Known Issues
+### truth_tables.py
 
-error al ingresar simbolos que no sean letras o operadores lógicos
+### shunting_yard.py
 
-## License
+### GUI.py
+
+## Problemas Conocidos
+
+- Falta de validacion:
+  - Error al ingresar simbolos que no sean letras o operadores lógicos. 
+
+

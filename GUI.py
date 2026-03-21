@@ -104,12 +104,54 @@ def main(page: ft.Page):
         'acomodo pag de argumentos'
         # p→q,p∧r,¬q∨r
         # r
-        page.clean() #limpia pag
-
-
+        page.clean()
+        chat = ft.Column() #crea un espacio para agregar textos (argumentos y conclusiones) en forma de columna
         #inputs
-        argumentos = ft.TextField(label="argumentos", autofocus=True)
-        conclu = ft.TextField(label="conclusion")
+        argumentos = ft.TextField(label="argumentos", autofocus=True,
+                                on_submit = lambda e : send_click(e)) #on_submit es para que se ejecute la función al presionar enter
+        conclu = ft.TextField(label="conclusion",
+                              on_submit = lambda e : send_click(e)) #on_submit es para que se ejecute la función al presionar enter
+
+        #lista donde se almacenaran las premisas 
+        listas_premisas = []
+        txt_premisas = ft.Text("Premisas: ", weight = ft.FontWeight.BOLD)
+        txt_conclusion = ft.Text("Conclusión: ", weight = ft.FontWeight.BOLD)
+
+        #funcion para mostrar en pantalla lo que se escribió en los inputs
+
+        def send_click(e):
+            #lista para guardar las premisas. Si el input de argumentos no está vacío, agrega el argumento a la lista de premisas y muestra las premisas guardadas en pantalla.
+            if argumentos.value.strip() != "":
+                listas_premisas.append(argumentos.value.strip())
+                txt_premisas.value = "Premisas:\n" + "\n".join(listas_premisas)
+                argumentos.value = ""
+                page.update()
+
+        def send_conclusion(e):
+                if conclu.value.strip() != "":
+                    txt_conclusion.value = "Conclusión:\n" + conclu.value.strip()
+                    page.update()
+
+        def limpiar_pantalla(e):
+            chat.controls.clear()
+            argumentos.value = ""
+            conclu.value = ""
+            txt_premisas.value = "Premisas: "
+            txt_conclusion.value = "Conclusión: "
+            tabla_GUI.controls.clear()
+            page.update()
+
+        argumentos.on_submit =  send_click
+        conclu.on_submit = send_conclusion
+
+        fila_argumentos = ft.Row(
+            controls = [argumentos, ft.ElevatedButton ("Send", on_click=send_click)],
+            alignment = ft.MainAxisAlignment.CENTER
+        )
+        fila_conclusion = ft.Row(
+            controls = [conclu, ft.ElevatedButton("Send", on_click=send_conclusion)],
+            alignment = ft.MainAxisAlignment.CENTER
+        )
 
         #botones para simbolos
         def agregar_simbolo(e):
@@ -133,8 +175,7 @@ def main(page: ft.Page):
         def validar_argumento(e):
             'conecta archivo truth_tables.py a GUI'
 
-            #capta lo de los input (+ hace una lista separada por las comas del input)
-            premises = argumentos.value.split(",")
+            premises = listas_premisas
             conclusion = conclu.value.strip()
             
             #usa función de truth_tables.py. Todavía no funciona 
@@ -163,11 +204,12 @@ def main(page: ft.Page):
             page.update()
 
         # botones para usar funciones
+        b_limpiar = ft.ElevatedButton("Limpiar", on_click = limpiar_pantalla)
         b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
         b_validar = ft.ElevatedButton("validar", on_click = validar_argumento)
 
         #agregar todas las variables (botones) a la pag. Todavía no están los inputs
-        page.add(argumentos, b_simbolos, conclu, b_validar, b_volver)
+        page.add(fila_argumentos, fila_conclusion, txt_premisas,txt_conclusion, b_simbolos, b_validar, b_volver, b_limpiar )
 
 
     # Acomodar página tablas

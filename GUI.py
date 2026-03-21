@@ -118,7 +118,6 @@ def main(page: ft.Page):
         txt_conclusion = ft.Text("Conclusión: ", weight = ft.FontWeight.BOLD)
 
         #funcion para mostrar en pantalla lo que se escribió en los inputs
-
         def send_click(e):
             #lista para guardar las premisas. Si el input de argumentos no está vacío, agrega el argumento a la lista de premisas y muestra las premisas guardadas en pantalla.
             if argumentos.value.strip() != "":
@@ -138,7 +137,7 @@ def main(page: ft.Page):
             conclu.value = ""
             txt_premisas.value = "Premisas: "
             txt_conclusion.value = "Conclusión: "
-            tabla_GUI.controls.clear()
+            #tabla_GUI.controls.clear()
             page.update()
 
         argumentos.on_submit =  send_click

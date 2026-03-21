@@ -68,13 +68,14 @@ def shuntingYard(input : str):
 
 def proposition_dict(shunt, values):
     '''Finding variables and creating dictionary with values given'''
+    values_lower = [v.lower() for v in values]
     dictionary_values = {
-        'true': True,
-        'false': False,
+        'true': True, 'verdad': True, 'verdadero': True, 'cierto': True, '1': True,
+        '0': False, 'false': False, 'falso': False,
         }
     values_bool = []
-    for value in values:
-        if value.lower() in dictionary_values:
+    for value in values_lower:
+        if value in dictionary_values:
             values_bool.append(dictionary_values[value])
 
     variables = []

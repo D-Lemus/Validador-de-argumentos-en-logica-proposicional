@@ -49,6 +49,7 @@ def generateTruthTable(premises: list, conclusion: str):
 
     invalid_rows  = []
     critical_rows = []
+    critical_index = []
 
     for _, row in df.iterrows():
         row_vals       = list(row)
@@ -58,7 +59,9 @@ def generateTruthTable(premises: list, conclusion: str):
         if all_prems_true:
             if conc_true:
                 critical_rows.append(row_vals)
+                critical_index.append(_)
                 print(f"Filas criticas: {critical_rows}")
+                print(f"Indice crítico: {_}")
             else:
                 invalid_rows.append(row_vals)
                 print(f"Filas invalidas: {invalid_rows}")

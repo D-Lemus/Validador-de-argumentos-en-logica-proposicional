@@ -288,7 +288,20 @@ def main(page: ft.Page):
             conclusion = conclu.value.strip()
             
             # función de truth_tables.py
-            valor, df = TV.generateTruthTable(premises, conclusion)
+            valor, df, critical_index = TV.generateTruthTable(premises, conclusion)
+
+            filas = []
+
+            for i, fila in df.iterrows():
+                color = None
+                if i in critical_index:
+                    color = "#006400"
+                filas.append(ft.DataRow(
+                    color = color,
+                    cells = [
+                        ft.DataCell(ft.Text(str(valor)))
+                        for valor in fila]
+                    ))
 
             # convierte dataframe en la datatable de flet (celda por celda)
             tabla_GUI = ft.DataTable( 
@@ -296,12 +309,9 @@ def main(page: ft.Page):
                     ft.DataColumn(ft.Text(columna))
                     for columna in df.columns
                 ],
-                rows=[
-                    ft.DataRow(cells=[
-                        ft.DataCell(ft.Text(str(valor)))
-                        for valor in fila])
-                        for _, fila in df.iterrows()]
+                rows=filas
             )
+            
             validez = ft.Text(f"El argumento es: {valor}",
                             size = 15,
                             text_align = ft.TextAlign.CENTER
@@ -313,7 +323,6 @@ def main(page: ft.Page):
                                expand=True,
                                ),)
             page.update()
-        
 
         b_ayuda = boton_ayuda(
             lambda e:mensaje_ayuda(page,

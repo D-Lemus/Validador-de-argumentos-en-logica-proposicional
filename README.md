@@ -1,6 +1,6 @@
 # Logica y Estructuras Discretas - Validador de Argumentos en Lógica Proposicional
 
-> Interfaz gráfica que evaluar la validez de un argumento mediante la generación de tablas de verdad
+> Interfaz gráfica que evalue la validez de un argumento mediante la generación de tablas de verdad
 
 ---
 
@@ -9,10 +9,12 @@
 Este es un proyecto relacionado a la materia de Lógica y Estructuras Discretas. Su objetivo es desarrollar una aplicación en Python que permita analizar argumentos de lógica proposicional usando tablas de verdad.
 
 ## Features
-
-- Generador de Tablas de Verdad:
-
-- Interfaz Gráfica (GUI):
+- Generador de Tablas de Verdad: genera la tabla completa del argumento
+  e identifica los renglones críticos resaltados en verde
+- Calculadora de Proposiciones: evalúa el valor de verdad de una
+  proposición dados los valores de sus variables
+- Interfaz Gráfica (GUI): navegación entre páginas, teclado de símbolos
+  lógicos integrado (`¬ ∧ ∨ → ↔`) y tablas de referencia de conectivos
 
 ## Requerimientos
 

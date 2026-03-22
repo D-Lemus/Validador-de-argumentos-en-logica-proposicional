@@ -3,13 +3,108 @@ import shunting_yard as log
 import truth_tables as TV
 import premade_tables as preT
 
+# ------ BOTONES Y FUNCIONES GLOBALES ----------------------------------------------
+# usados varias veces en diferentes páginas
+# ----------------------------------------------------------------------------------
 
-# Iniciar Ventana
+def divisor():
+    '''linea divisora'''
+    return ft.Divider(color=ft.Colors.PRIMARY, thickness=2)
+
+def boton_volver(pagina):
+    '''regresa a pag_inicio'''
+    return ft.ElevatedButton("← volver", on_click = pagina)
+
+def boton_reset(accion, tip):
+    '''regresa a página actual'''
+    return ft.ElevatedButton("reset", on_click = accion, icon=ft.Icons.RESTART_ALT,
+                                    tooltip=tip)
+
+def boton_ayuda(accion_ayuda):
+    return ft.IconButton(icon=ft.Icons.HELP,
+                            icon_color=ft.Colors.PRIMARY,
+                            icon_size=30,
+                            style=ft.ButtonStyle(shape=ft.CircleBorder()),
+                            on_click = accion_ayuda,
+                            tooltip="Acerca de uso"
+                            )
+                            
+def mensaje_ayuda(page, titulo, contenido):
+    '''pop up mensaje'''
+    ayuda = ft.AlertDialog(
+                title=ft.Text(titulo),
+                content=ft.Text(contenido),
+                actions=[ft.TextButton("Ok!", on_click=lambda e: cerrar())],
+                )
+    def cerrar():
+        ayuda.open=False
+        page.update()
+        
+    page.overlay.append(ayuda)
+    ayuda.open=True
+    page.update()
+
+
+def valida_calcular(texto, accion):
+    return ft.ElevatedButton(texto, on_click = accion,
+                            icon=ft.Icons.CHECK_CIRCLE,
+                            width=120, height=120,
+                            style=ft.ButtonStyle(
+                            text_style=ft.TextStyle(
+                            size=15,
+                            weight="bold",
+                            ),
+                            shape=ft.RoundedRectangleBorder(radius=10),),
+                            )
+
+def teclado(lista_simbolos, acc_simbolos, acc_limpiar, tip, texto, accion_validar):
+    '''crea varios botones y los acomoda'''
+    botones_simbolos = []
+    for s in lista_simbolos:
+        botones_simbolos.append(ft.ElevatedButton(s, data=s, on_click=acc_simbolos, autofocus=False, 
+                            style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),
+                            text_style=ft.TextStyle(size=20,weight="bold"),),)
+        )
+    b_limpiar = ft.IconButton(icon=ft.Icons.CLEANING_SERVICES,
+                            icon_color=ft.Colors.BLACK,
+                            icon_size=40,
+                            bgcolor=ft.Colors.SECONDARY,
+                            width=20, height=20,
+                            style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
+                            on_click = acc_limpiar,
+                            tooltip= tip
+                            )
+    b_validar = ft.ElevatedButton(texto, on_click = accion_validar,
+                            icon=ft.Icons.CHECK_CIRCLE,
+                            width=150, height=150,
+                            style=ft.ButtonStyle(
+                            text_style=ft.TextStyle(
+                            size=15,
+                            weight="bold",
+                            ),
+                            shape=ft.RoundedRectangleBorder(radius=10),),
+                            )
+    grid_simbolos = ft.GridView(
+        controls= botones_simbolos + [b_limpiar],
+        runs_count=4,
+        spacing=20,
+        run_spacing=10,
+        child_aspect_ratio=1.0,
+        width=280,
+        height=150,
+        )
+    return ft.Row(controls=[grid_simbolos, b_validar],
+                            alignment = ft.MainAxisAlignment.CENTER,
+                            vertical_alignment = ft.CrossAxisAlignment.CENTER,
+                            spacing=30)
+
+# ------ PÁGINA PRINCIPAL ----------------------------------------------------------
+
 def main(page: ft.Page):
     'abre ventana'
     page.title = "Validador de Argumentos" #título de la pag
 
-    #alinear y dar tamaño a la pag
+    # alinear y dar tamaño a la pag
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.window.height = 700
@@ -19,12 +114,11 @@ def main(page: ft.Page):
         color_scheme=ft.ColorScheme(
         ))
 
-
     def pag_inicio(e=None):
         'acomodo de pag inicio'
         page.clean() #limpia todo lo que haya antes en la pag
         
-        #fondo interactivo
+        # fondo interactivo
         def tes_a_efes(e):
             '''Cambio de T a F y de colores'''
             e.control.content.value = "F" if e.data == True else "T"
@@ -43,18 +137,9 @@ def main(page: ft.Page):
                     on_hover=tes_a_efes,
                     alignment=ft.Alignment.CENTER,
                 ))
-        
         ##franja = ft.Container(content=grid, height=180)
 
-        overlay = ft.Container(
-            width=500,
-            height=4000,
-            bgcolor="#010101FF",
-            alignment=ft.Alignment.CENTER,
-            ignore_interactions=True
-            )
-
-        #variables para textos simples (con tamaño, negritas y alineación)
+        # variables para textos simples (con tamaño, negritas y alineación)
         bienvenida = ft.Text("BIENVENIDX",
                              size = 60,
                              weight = "bold",
@@ -67,50 +152,65 @@ def main(page: ft.Page):
         
         #variables para botones con sombra ("texto dentro del botón", evento = función)
         b_empezar = ft.ElevatedButton("empezar!",
-                                      on_click = pag_argumentos,
-                                      width=200, height=90,
-                                      style=ft.ButtonStyle(text_style=ft.TextStyle(size=28,weight="bold",)),
-                                      tooltip="tip",
-                                             )
+                                on_click = pag_argumentos,
+                                width=200, height=90,
+                                style=ft.ButtonStyle(text_style=ft.TextStyle(size=28,weight="bold",)),
+                                tooltip=":D",
+                                )
         b_tablas = ft.IconButton(icon=ft.Icons.TABLE_CHART,
-                                 icon_color=ft.Colors.BLACK,
-                                 icon_size=80,
-                                 bgcolor=ft.Colors.SECONDARY,
-                                 on_click = pag_tablas,
-                                 width=100, height=100,
-                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),),
-                                 tooltip="tablas de operadores lógicos",
-                                 )
+                                icon_color=ft.Colors.BLACK,
+                                icon_size=80,
+                                bgcolor=ft.Colors.SECONDARY,
+                                on_click = pag_tablas,
+                                width=100, height=100,
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),),
+                                tooltip="tablas",
+                                )
         b_calculadora = ft.IconButton(icon=ft.Icons.CALCULATE,
-                                      icon_color=ft.Colors.BLACK,
-                                      icon_size=80,
-                                      bgcolor=ft.Colors.SECONDARY,
-                                      on_click = pag_calculadora,
-                                      width=100, height=100,
-                                      style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),),
-                                      tooltip="calculadora de proposiciones compuestas"
-                                      )
+                                icon_color=ft.Colors.BLACK,
+                                icon_size=80,
+                                bgcolor=ft.Colors.SECONDARY,
+                                on_click = pag_calculadora,
+                                width=100, height=100,
+                                style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),),
+                                tooltip="calculadora"
+                                )
+        b_ayuda = boton_ayuda(
+            lambda e:mensaje_ayuda(page,
+                                "Herramientas",
+                                "★ VALIDADOR: " \
+                                "Introduce tu argumento para analizar su validez\n" \
+                                "\t\t\t\t+ Calculadora: " \
+                                "Descubre el valor de verdad de tu proposición\n" \
+                                "\t\t\t\t+ Tablas: " \
+                                "Conoce las tablas de verdad y equivalencias lógicas\n"
+                                ))
+        
+        # acomoda botones en fila o columna y las agrega a la página
         b_extras = ft.Row(controls=[b_tablas, b_calculadora],
                           alignment=ft.MainAxisAlignment.CENTER, spacing=30,
                           )
-        #agregar todas las variables (texto y botones) a la pag
         contenido = (ft.Column(
-            controls=[bienvenida, b_empezar, subsaludo, ft.Container(height=40), b_extras],
-            alignment = ft.MainAxisAlignment.CENTER,
-            horizontal_alignment = ft.CrossAxisAlignment.CENTER,
-            ))
-        page.add(ft.Stack([grid, overlay, contenido],expand=True))
+                    controls=[bienvenida, b_empezar, subsaludo, ft.Container(height=40), b_extras],
+                    alignment = ft.MainAxisAlignment.CENTER,
+                    horizontal_alignment = ft.CrossAxisAlignment.CENTER,
+                    ))
+        
+        # layout: agrega todas las variables (inputs, botones, texto) a la pag
+        page.add(ft.Stack([grid, b_ayuda, contenido],expand=True))
             
+# ------ PÁGINA DE VALIDADOR DE ARGUMENTOS ----------------------------------------------------------
 
     def pag_argumentos(e=None):
         'acomodo pag de argumentos'
         page.clean()
         page.scroll = ft.ScrollMode.AUTO
 
-        #Para insertar simbolos en ambos input
+        # detecta input activo para insertar simbolos
         campo = {"input_actual": None}
         def enfocar(e):
             campo["input_actual"] = e.control
+
 
         chat = ft.Column() #crea un espacio para agregar textos (argumentos y conclusiones) en forma de columna
         #inputs
@@ -120,7 +220,7 @@ def main(page: ft.Page):
                             on_focus = enfocar,
                             )
         conclu = ft.TextField(label="conclusion",
-                            hint_text="(p∨q)∧(¬r→s)",
+                            hint_text="r",
                             on_focus = enfocar,
                             )
 
@@ -169,7 +269,7 @@ def main(page: ft.Page):
 
 
         def insertar_simbolo(e):
-            'agrega el texto del botón a campo actual'
+            'agrega el texto del botón a campo de input actual'
             objetivo = campo["input_actual"]
             
             if objetivo:
@@ -187,11 +287,10 @@ def main(page: ft.Page):
             premises = listas_premisas
             conclusion = conclu.value.strip()
             
-            #usa función de truth_tables.py. Todavía no funciona 
+            # función de truth_tables.py
             valor, df = TV.generateTruthTable(premises, conclusion)
 
-            # debug -> print(valor, df)
-
+            # convierte dataframe en la datatable de flet (celda por celda)
             tabla_GUI = ft.DataTable( 
                 columns=[
                     ft.DataColumn(ft.Text(columna))
@@ -214,146 +313,152 @@ def main(page: ft.Page):
                                expand=True,
                                ),)
             page.update()
+        
 
+        b_ayuda = boton_ayuda(
+            lambda e:mensaje_ayuda(page,
+                                    "USO",
+                                    "Requerimientos:\n" \
+                                    "bla bla bla\n" \
+                                    "Limitantes:\n" \
+                                    "bla bla bla\n\n" \
+                                    "OJO, CUIDA TU INPUT"
+                                    ))
+        b_teclado = teclado(["¬", "∧", "∨", "→", "↔", "(", ")"],insertar_simbolo,
+                            limpiar_argumentos, "limpiar argumentos", "validar", validar_argumento)
+        linea = divisor()
+        b_reset = boton_reset(pag_argumentos, "eliminar tablas")
+        b_volver = boton_volver(pag_inicio)
 
-        divisor = ft.Divider(color=ft.Colors.PRIMARY, thickness=2)
-        b_reset = ft.ElevatedButton("reset", on_click = pag_argumentos,icon=ft.Icons.RESTART_ALT,
-                                    tooltip="eliminar tablas")
-        b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
-        b_limpiar = ft.IconButton(icon=ft.Icons.CLEANING_SERVICES,
-                                  icon_color=ft.Colors.BLACK,
-                                  icon_size=40,
-                                  bgcolor=ft.Colors.SECONDARY,
-                                  width=20, height=20,
-                                  style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10)),
-                                  on_click = limpiar_argumentos,
-                                  tooltip="limpiar argumentos"
-                                  )
-        b_validar = ft.ElevatedButton("validar", on_click = validar_argumento,
-                                    icon=ft.Icons.CHECK_CIRCLE,
-                                    width=120, height=120,
-                                    style=ft.ButtonStyle(
-                                    text_style=ft.TextStyle(
-                                    size=15,
-                                    weight="bold",
-                                    ),
-                                    shape=ft.RoundedRectangleBorder(radius=10),),
-                                    )
-        b_no = ft.ElevatedButton("¬", data="¬", on_click=insertar_simbolo, autofocus=False, 
-                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),
-                                                      text_style=ft.TextStyle(size=20,
-                                                                              weight="bold"),),)
-        b_y = ft.ElevatedButton("∧", data="∧", on_click=insertar_simbolo, autofocus=False, 
-                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),
-                                                      text_style=ft.TextStyle(size=20,weight="bold"),))
-        b_o = ft.ElevatedButton("∨", data="∨",on_click=insertar_simbolo, autofocus=False, 
-                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),
-                                                      text_style=ft.TextStyle(size=20,weight="bold"),),)
-        b_con = ft.ElevatedButton("→", data="→", on_click=insertar_simbolo, autofocus=False, 
-                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),
-                                                      text_style=ft.TextStyle(size=20,weight="bold"),),)
-        b_bicon = ft.ElevatedButton("↔", data="↔", on_click=insertar_simbolo, autofocus=False, 
-                                 style=ft.ButtonStyle(shape=ft.RoundedRectangleBorder(radius=10),
-                                                      text_style=ft.TextStyle(size=20,),),)
-
-        teclado = ft.GridView(
-            controls=[b_no, b_y, b_o, b_con, b_bicon, b_limpiar,],
-            runs_count=3,
-            spacing=10,
-            run_spacing=10,
-            child_aspect_ratio=1.0,
-            width=200,
-            height=150,
-        )
-
-        b_simbolos = ft.Row(controls=[teclado, b_validar],
-                            alignment = ft.MainAxisAlignment.CENTER,
-                            spacing=100)
-
-        #agregar todas las variables (botones) a la pag. Todavía no están los inputs
-        page.add(ft.Column(controls=[chat, fila_argumentos, fila_conclusion, b_simbolos, divisor, txt_premisas, txt_conclusion],
+        # layout
+        page.add(ft.Column(controls=[chat, fila_argumentos, fila_conclusion, b_teclado, linea, txt_premisas, txt_conclusion],
             horizontal_alignment=ft.MainAxisAlignment.CENTER,
             spacing=20,
             ),
-            divisor,
-            ft.Row(controls=[b_reset, b_volver,],
+            linea,
+            ft.Row(controls=[b_reset, b_volver, b_ayuda],
                    alignment=ft.MainAxisAlignment.CENTER,
                    )
             )
 
+# ------ PÁGINA DE TABLAS DE CONECTORES LÓGICOS ----------------------------------------------------------
 
-    # Acomodar página tablas
     def pag_tablas(e=None):
+        'acomodo pag de tablas'
         page.clean()
 
+        # funciones de premade_tables.py
         t_not = preT.table_NOT()
         t_and = preT.table_AND()
         t_or = preT.table_OR()
         t_if = preT.table_CONDITIONAL()
         t_onlyif = preT.table_BICONDITIONAL()
 
+        titulos = ["NEGACION", "CONJUNCION", "DISYUNCION", "CONDICIONAL", "BICONDICIONAL"]
+        tablas = [t_not, t_and, t_or, t_if, t_onlyif]
 
-        b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
+        dict_titulos = dict(zip(titulos, tablas))
 
-        page.add(ft.Row(
-            controls=[
-                ft.Column([ft.Text("NEGACION", size=20), t_not],
-                          horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                          spacing=10,
-                          ),
-                ft.Column([ft.Text("CONJUNCION", size=20), t_and],
-                          horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                          spacing=10,),
-                ft.Column([ft.Text("DISYUNCION", size=20), t_or],
-                          horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                          spacing=10,),
-                ft.Column([ft.Text("CONDICIONAL", size=20), t_if],
-                          horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                          spacing=10,),
-                ft.Column([ft.Text("BICONDICIONAL", size=20), t_onlyif],
-                          horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                          spacing=10,),
-                ],
-                scroll=ft.ScrollMode.AUTO,
-                spacing=50,
-            ))
-        page.add(b_volver)
+        # une tablas con su título
+        titulos_tabla = []
+        for t in dict_titulos:
+            titulos_tabla.append(ft.Column([ft.Text(t, size=20), dict_titulos[t]],
+                        horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                        spacing=10,
+                        ))
+            
+        b_ayuda = boton_ayuda(
+            lambda e:mensaje_ayuda(page,
+                                    "INFORMACIÓN",
+                                    "Las tablas de esta página son de los operadores" \
+                                    "lógicos. Es la base de la lógica!\n" \
+                                    "Usa este conocimiento sabiamente..."
+                                    ))
+        b_volver = boton_volver(pag_inicio)
 
-    #Pagina de calculadora. Prueba para conectar lógica con GUI usando flet
+        # layout
+        page.add(ft.Row(controls=titulos_tabla, scroll=ft.ScrollMode.AUTO, spacing=50,),
+                 ft.Row(controls=[b_volver, b_ayuda],
+                   alignment=ft.MainAxisAlignment.CENTER,
+                   ))
+
+# ------ PÁGINA DE CALCULADORA DE PROPOSICIONES COMPUESTAS ----------------------------------------------------------
+
     def pag_calculadora(e=None):
+        'acomodo pag calculadora'
         page.clean()
+        page.scroll = ft.ScrollMode.AUTO
+
+        campo = {"input_actual": None}
+        def enfocar(e):
+            campo["input_actual"] = e.control
 
         def calcular(e):
+            'conecta archivo de shunting_yard.py con GUI'
             input = proposicion.value
             values = valores.value.split(",")
-            propo = ft.Text(f"Proposicion: {input}",
-                            size = 15,
-                            text_align = ft.TextAlign.CENTER
-                            )
+            
             shunt = log.shuntingYard(input)
             var_values = log.proposition_dict(shunt, values)
             boolShunt = log.applyBooleanValues(shunt, var_values)
             result = log.performCalculation(boolShunt)
 
+            propo = ft.Text(f"Proposicion: {input}",
+                            size = 15,
+                            text_align = ft.TextAlign.CENTER
+                            )
             resultado = ft.Text(f"Resultado: {result}\n",
                             size = 15,
                             text_align = ft.TextAlign.CENTER
                             )
+            
             page.add(propo, resultado)
-            #print(f"Resultado: {result}\n")
+
+        def insertar_simbolo(e):
+            'agrega el texto del botón a campo actual'
+            objetivo = campo["input_actual"]
+            
+            if objetivo:
+                simbolo = e.control.data
+                texto_actual = objetivo.value or ""
+                objetivo.value = texto_actual + simbolo
+                page.update()
+
+            objetivo.focus()
+
+        def limpiar_proposicion(e):
+            proposicion.value = ""
+            valores.value = ""
+            page.update()
         
-        proposicion = ft.TextField(label="Proposicion", hint_text="(p∨q)∧(¬r→s)")
-        valores = ft.TextField(label="Valores de las Variables", hint_text="true,false,true,false")
-        b_volver = ft.ElevatedButton("← volver", on_click = pag_inicio)
-        b_calcular = ft.ElevatedButton("calcular", on_click = calcular)
+        proposicion = ft.TextField(label="Proposicion", hint_text="(p∨q)∧(¬r→s)", on_focus = enfocar, autofocus=True)
+        valores = ft.TextField(label="Valores de las Variables", hint_text="true,false,true,false", on_focus = enfocar)
+        
+        b_ayuda = boton_ayuda(
+            lambda e:mensaje_ayuda(page,
+                                    "USO",
+                                    "Requerimientos:\n" \
+                                    "bla bla bla\n" \
+                                    "Limitantes:\n" \
+                                    "bla bla bla\n\n" \
+                                    "OJO, CUIDA TU INPUT"
+                                    ))
+        b_reset = boton_reset(pag_calculadora, "borrar\nreultados pasados")
+        b_volver = boton_volver(pag_inicio)
+        b_teclado = teclado(["0", "¬", "∧", "∨", "1", "→", "↔"], insertar_simbolo, limpiar_proposicion, "limpiar proposicion", "calcula", calcular)
 
-        page.add(proposicion, valores, b_calcular, b_volver)
+        # layout
+        page.add(proposicion, valores, b_teclado,
+                 ft.Row(controls=[b_reset, b_volver, b_ayuda],
+                   alignment=ft.MainAxisAlignment.CENTER,
+                   ))
 
+    # inicializa página
     pag_inicio()
-    #page.update() <- esto era para eventos
+    page.update()
 
+# ejemplo argumento:
 # p→q,p∧r,¬q∨r
 # r
 
 ft.app(target=main)
-

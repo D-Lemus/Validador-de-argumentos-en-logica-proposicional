@@ -29,17 +29,39 @@ Para le ejecución de este proyecto es necesario:
 
 El proyecto se divide en tres partes principales. truth_tables, generador de tablas de verdad. shunting_yard, lógica que evalua valor de verdad de una proposicion, la GUI, archivo que lanza la aplicación 
 
-Al ejecutar la apicacion haz click en 
+Para ejecutar la aplicacion escribe en la terminal:
+```
+pyhton GUI.py
+```
+### Validador de argumentos
+1. Escribe una premisa en el campo "argumento" y presiona **+** para agregarla
+2. Repite para cada premisa adicional
+3. Escribe la conclusión en su campo
+4. Usa el teclado de símbolos para insertar conectivos
+5. Presiona **validar** — se mostrará la tabla y el veredicto
 
-### truth_tables.py
+### Calculadora
+1. Escribe la proposición (ej. `p∧q`)
+2. Ingresa los valores separados por comas (ej. `true,false`)
+3. Presiona **calcula**
 
-### shunting_yard.py
+### Tablas de referencia
+Consulta las tablas de los 5 conectivos lógicos: `¬ ∧ ∨ → ↔`
 
-### GUI.py
+## Estructura del proyecto
+```
+├── GUI.py              # Interfaz gráfica
+├── truth_tables.py     # Generador de tablas de verdad
+├── shunting_yard.py    # Algoritmo de validacion basado en RPN(Reverse Polish Notation)
+└── premade_tables.py   # Tablas ya  preconstruidas de los conectivos lógicos
+```
 
 ## Problemas Conocidos
 
-- Falta de validacion:
-  - Error al ingresar simbolos que no sean letras o operadores lógicos. 
+- **Falta de validacion:** Error al ingresar simbolos que no sean letras o operadores lógicos.
+- **Variables de un solo carácter:** cada variable debe ser una sola letra
+  (p, q, r...)
+- **Orden de valores en la calculadora:** los valores deben ingresarse en
+  el mismo orden en que aparecen las variables en la proposición
 
 

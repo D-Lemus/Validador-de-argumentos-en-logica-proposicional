@@ -137,7 +137,7 @@ def main(page: ft.Page):
                     on_hover=tes_a_efes,
                     alignment=ft.Alignment.CENTER,
                 ))
-        ##franja = ft.Container(content=grid, height=180)
+        # fin de fondo interactivo
 
         # variables para textos simples (con tamaño, negritas y alineación)
         bienvenida = ft.Text("BIENVENIDX",
@@ -149,8 +149,8 @@ def main(page: ft.Page):
                             size = 25,
                             text_align = ft.TextAlign.CENTER,
                             )
-        
-        #variables para botones con sombra ("texto dentro del botón", evento = función)
+
+        # variables para botones con sombra ("texto dentro del botón", evento = función)
         b_empezar = ft.ElevatedButton("empezar!",
                                 on_click = pag_argumentos,
                                 width=200, height=90,
@@ -283,56 +283,62 @@ def main(page: ft.Page):
 
         def validar_argumento(e):
             'conecta archivo truth_tables.py a GUI'
+            try: # prueba todo el proceso de validación
+                premises = listas_premisas
+                conclusion = conclu.value.strip()
+                
+                # función de truth_tables.py
+                valor, df, critical_index, ivalid_index = TV.generateTruthTable(premises, conclusion)
 
-            premises = listas_premisas
-            conclusion = conclu.value.strip()
+                filas = []
+
+                for i, fila in df.iterrows():
+                    color = None
+                    if i in critical_index:
+                        color = "#006400"
+                    elif i in ivalid_index:
+                        color = "#880808"
+                    filas.append(ft.DataRow(
+                        color = color,
+                        cells = [
+                            ft.DataCell(ft.Text(str(valor)))
+                            for valor in fila]
+                        ))
+
+                # convierte dataframe en la datatable de flet (celda por celda)
+                tabla_GUI = ft.DataTable( 
+                    columns=[
+                        ft.DataColumn(ft.Text(columna))
+                        for columna in df.columns
+                    ],
+                    rows=filas
+                )
+                
+                validez = ft.Text(f"El argumento es: {valor}",
+                                size = 15,
+                                text_align = ft.TextAlign.CENTER
+                                )
             
-            # función de truth_tables.py
-            valor, df, critical_index, ivalid_index = TV.generateTruthTable(premises, conclusion)
+                page.add(validez, ft.Column(controls=[tabla_GUI],
+                                scroll=ft.ScrollMode.ALWAYS,
+                                height=500,
+                                expand=True,
+                                ),)
+                page.update()
 
-            filas = []
-
-            for i, fila in df.iterrows():
-                color = None
-                if i in critical_index:
-                    color = "#006400"
-                elif i in ivalid_index:
-                    color = "#880808"
-                filas.append(ft.DataRow(
-                    color = color,
-                    cells = [
-                        ft.DataCell(ft.Text(str(valor)))
-                        for valor in fila]
-                    ))
-
-            # convierte dataframe en la datatable de flet (celda por celda)
-            tabla_GUI = ft.DataTable( 
-                columns=[
-                    ft.DataColumn(ft.Text(columna))
-                    for columna in df.columns
-                ],
-                rows=filas
-            )
-            
-            validez = ft.Text(f"El argumento es: {valor}",
-                            size = 15,
-                            text_align = ft.TextAlign.CENTER
-                            )
-        
-            page.add(validez, ft.Column(controls=[tabla_GUI],
-                               scroll=ft.ScrollMode.ALWAYS,
-                               height=500,
-                               expand=True,
-                               ),)
-            page.update()
+            except Exception as ex: # Si sucede algún error que impida validar muestra un mensaje
+                mensaje_ayuda(page, "Error",f"Error en algún input: {str(ex)}")
+    
 
         b_ayuda = boton_ayuda(
             lambda e:mensaje_ayuda(page,
                                     "USO",
                                     "Requerimientos:\n" \
-                                    "bla bla bla\n" \
+                                    "\tIngrese sus premisas y conclusión, luego haga click en 'send'\n" \
+                                    "\tHaga click en 'validar'\n" \
                                     "Limitantes:\n" \
-                                    "bla bla bla\n\n" \
+                                    "\tSi no se ingresan operadores no obtendrá una tabla válida\n" \
+                                    "\tLos errores no indican claramente el problema con el input\n\n" \
                                     "OJO, CUIDA TU INPUT"
                                     ))
         b_teclado = teclado(["¬", "∧", "∨", "→", "↔", "(", ")"],insertar_simbolo,
@@ -406,24 +412,28 @@ def main(page: ft.Page):
 
         def calcular(e):
             'conecta archivo de shunting_yard.py con GUI'
-            input = proposicion.value
-            values = valores.value.split(",")
-            
-            shunt = log.shuntingYard(input)
-            var_values = log.proposition_dict(shunt, values)
-            boolShunt = log.applyBooleanValues(shunt, var_values)
-            result = log.performCalculation(boolShunt)
+            try: # prueba todo el proceso de calculo
+                input = proposicion.value
+                values = valores.value.split(",")
+                
+                shunt = log.shuntingYard(input)
+                var_values = log.proposition_dict(shunt, values)
+                boolShunt = log.applyBooleanValues(shunt, var_values)
+                result = log.performCalculation(boolShunt)
 
-            propo = ft.Text(f"Proposicion: {input}",
-                            size = 15,
-                            text_align = ft.TextAlign.CENTER
-                            )
-            resultado = ft.Text(f"Resultado: {result}\n",
-                            size = 15,
-                            text_align = ft.TextAlign.CENTER
-                            )
-            
-            page.add(propo, resultado)
+                propo = ft.Text(f"Proposicion: {input}",
+                                size = 15,
+                                text_align = ft.TextAlign.CENTER
+                                )
+                resultado = ft.Text(f"Resultado: {result}\n",
+                                size = 15,
+                                text_align = ft.TextAlign.CENTER
+                                )
+                
+                page.add(propo, resultado)
+
+            except Exception as ex: # Si sucede algún error que impida validar muestra un mensaje
+                mensaje_ayuda(page, "Error",f"Error en la premisa: {str(ex)}") 
 
         def insertar_simbolo(e):
             'agrega el texto del botón a campo actual'
@@ -449,9 +459,15 @@ def main(page: ft.Page):
             lambda e:mensaje_ayuda(page,
                                     "USO",
                                     "Requerimientos:\n" \
-                                    "bla bla bla\n" \
+                                    "\tUse premisas válidas y con operadores lógicos\n" \
+                                    "\tPara asignar valor de verdad use true/false y separe con comas\n" \
+                                    "\tLos valores de verdad serán asignados en el orden\n" \
+                                    "\tque se detecten las premisas (de izquierda a derecha)\n" \
                                     "Limitantes:\n" \
-                                    "bla bla bla\n\n" \
+                                    "\tAl ingresar cualquier elemento, palabra o frase\n" \
+                                    "\tno obtendrá un resultado correcto\n" \
+                                    "\tSi no se ingresan valores de verdad no funciona la calculadora\n" \
+                                    "\tNo se puede usar espacios en la asignación de valores\n\n" \
                                     "OJO, CUIDA TU INPUT"
                                     ))
         b_reset = boton_reset(pag_calculadora, "borrar\nreultados pasados")

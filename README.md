@@ -63,5 +63,17 @@ Consulta las tablas de los 5 conectivos lógicos: `¬ ∧ ∨ → ↔`
   (p, q, r...)
 - **Orden de valores en la calculadora:** los valores deben ingresarse en
   el mismo orden en que aparecen las variables en la proposición
+  
+## Créditos
 
+Proyecto desarrollado para la materia de **Lógica y Estructuras Discretas**  
+
+**ITESO** | 2026
+
+*Instituto Tecnologico de Estudio Superiores de Occidente*
+
+### Colaboradores
+- NUÑEZ PACHECO, JULIETA ~ AI
+- LEMUS SEPULVEDA, DIEGO ~ IS
+- GOMEZ GONZALEZ, VALENTINA ~ IS
 

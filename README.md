@@ -78,4 +78,4 @@ Proyecto desarrollado para la materia de **Lógica y Estructuras Discretas**
 - GOMEZ GONZALEZ, VALENTINA ~ IS
 
 ### Video explicativo
-
+https://youtu.be/P9grr-3qknY?si=TWDra180T9QDVdtR

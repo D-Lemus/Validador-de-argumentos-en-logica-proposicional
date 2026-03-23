@@ -22,7 +22,7 @@ Para le ejecución de este proyecto es necesario:
 - Python version: 3.x
 - Librerias:
   - Flet - Framework para crear aplicaciones con interfaz gráfica
-  - ttg -  Librería para generar tablas de verdad
+  - truth-tables-generator -  Librería para generar tablas de verdad
   - pandas -  Librería estándar para análisis y manipulación de datos en Python
 
 ## Uso

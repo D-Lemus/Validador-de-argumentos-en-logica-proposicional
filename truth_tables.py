@@ -1,4 +1,5 @@
 import ttg
+import pandas as pd
 
 premises   = [
     "P → Q",

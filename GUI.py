@@ -288,7 +288,7 @@ def main(page: ft.Page):
             conclusion = conclu.value.strip()
             
             # función de truth_tables.py
-            valor, df, critical_index = TV.generateTruthTable(premises, conclusion)
+            valor, df, critical_index, ivalid_index = TV.generateTruthTable(premises, conclusion)
 
             filas = []
 
@@ -296,6 +296,8 @@ def main(page: ft.Page):
                 color = None
                 if i in critical_index:
                     color = "#006400"
+                elif i in ivalid_index:
+                    color = "#880808"
                 filas.append(ft.DataRow(
                     color = color,
                     cells = [
@@ -460,7 +462,7 @@ def main(page: ft.Page):
         page.add(proposicion, valores, b_teclado,
                  ft.Row(controls=[b_reset, b_volver, b_ayuda],
                    alignment=ft.MainAxisAlignment.CENTER,
-                   ))
+                   )) 
 
     # inicializa página
     pag_inicio()

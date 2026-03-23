@@ -1,12 +1,10 @@
 import ttg
-import pandas as pd
 
 premises   = [
-    "p→q",
-    "p∧r",
-    "¬q∨r"
+    "P → Q",
+    "Q",
 ]
-conclusion = "r"
+conclusion = "P"
 
 
 def translateFormula(formula: str) -> str:
@@ -16,7 +14,7 @@ def translateFormula(formula: str) -> str:
     f = f.replace("∧", " and ")
     f = f.replace("∨", " or ")
     f = f.replace("→", " => ")
-    f = f.replace("↔", " (not p or q) and (not q or p) ")
+    f = f.replace("↔", " = ")
     return f
 
 
@@ -50,6 +48,7 @@ def generateTruthTable(premises: list, conclusion: str):
     invalid_rows  = []
     critical_rows = []
     critical_index = []
+    ivalid_index = []
 
     for _, row in df.iterrows():
         row_vals       = list(row)
@@ -64,6 +63,7 @@ def generateTruthTable(premises: list, conclusion: str):
                 print(f"Indice crítico: {_}")
             else:
                 invalid_rows.append(row_vals)
+                ivalid_index.append(_)
                 print(f"Filas invalidas: {invalid_rows}")
 
     print()
@@ -78,10 +78,12 @@ def generateTruthTable(premises: list, conclusion: str):
         valor = "NO HAY RENGLONES CRÍTICOS"
     
     #debug
-    #print(type(df))
-    #print(valor)
+    print(f"Indice renglón: {critical_index}")
+    print(f"Renglones críticos: {critical_rows}")
+    print(f"Tipo de dato df: {type(df)}")
+    print(f"Validez: {valor}")
 
-    return valor, df
+    return valor, df, critical_index, ivalid_index
 
 
 if __name__ == "__main__":
